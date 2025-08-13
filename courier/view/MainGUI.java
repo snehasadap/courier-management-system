@@ -92,7 +92,8 @@ public class MainGUI extends JFrame{
     }
 
     public void displayAll() {
-        System.out.println("[displayAll] Total packages: " + manager.all().size());
+        DisplayGUI dgui = new DisplayGUI(manager);
+        dgui.setVisible(true);
     }
 
     public void searchAll() {
