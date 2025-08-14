@@ -16,6 +16,11 @@ public class PackageManager {
         return p;
     }
 
+    public Package add(double weight, String description, String destination,
+                       String mailedDate, String expectedArrival) {
+        return add((int)Math.round(weight), description, destination, mailedDate, expectedArrival);
+    }
+
     public boolean removePackage(int id) {
         return packageList.removeIf(p -> p.getId() == id);
     }
