@@ -43,8 +43,5 @@ last update time
 From the root directory of the project (where the `courier/` folder is located):
 
 ```bash
-# compile everything
 javac courier/**/*.java
-
-# run the app (main class = courier.App)
 java courier.App
