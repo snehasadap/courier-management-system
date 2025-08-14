@@ -3,50 +3,46 @@ package courier.view;
 import courier.manager.PackageManager;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.*;
 
-public class CostEstimateGUI extends JFrame{
+public class CostEstimateGUI extends JDialog {
     private final PackageManager manager;
-    private JPanel contentPane;
-    private JTextField weightInput;
-    private JTextField costOutput;
-    private JButton calculateButton;
+    private final JTextField weightField = new JTextField(10);
+    private final JLabel result = new JLabel(" ");
 
     public CostEstimateGUI(PackageManager manager) {
+        super((Frame) null, "Estimate Cost", true);
         this.manager = manager;
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
+        JPanel root = new JPanel(new GridBagLayout());
+        root.setBorder(BorderFactory.createEmptyBorder(16,16,16,16));
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(6,6,6,6);
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.anchor = GridBagConstraints.WEST;
 
-        weightInput = new JTextField();
-        weightInput.setBounds(122, 39, 130, 26);
-        contentPane.add(weightInput);
-        weightInput.setColumns(10);
+        g.gridx=0; g.gridy=0; root.add(new JLabel("Weight (g):"), g);
+        g.gridx=1; g.gridy=0; root.add(weightField, g);
 
-        costOutput = new JTextField();
-        costOutput.setBounds(122, 81, 130, 26);
-        costOutput.setEditable(false);
-        contentPane.add(costOutput);
-        costOutput.setColumns(10);
+        JButton calc = new JButton("Calculate");
+        calc.addActionListener(e -> onCalc());
 
-        calculateButton = new JButton("Calculate");
-        calculateButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                costOutput.setText(estimate(Integer.parseInt(weightInput.getText())) + "");
-            }
-        });
-        calculateButton.setBounds(122, 120, 117, 29);
-        contentPane.add(calculateButton);
+        g.gridx=0; g.gridy=1; g.gridwidth=2; root.add(calc, g);
+        g.gridx=0; g.gridy=2; g.gridwidth=2; root.add(result, g);
+
+        setContentPane(root);
+        pack();
+        setLocationRelativeTo(null);
     }
 
-
-    public double estimate(int weight) {
-        return manager.estimate(weight);
+    private void onCalc() {
+        try {
+            int weight = Integer.parseInt(weightField.getText().trim());
+            double cost = manager.estimate(weight);
+            result.setText(String.format("Estimated Cost: $%.2f", cost));
+        } catch (NumberFormatException ex) {
+            result.setText("Enter a valid integer (grams).");
+        }
     }
 }

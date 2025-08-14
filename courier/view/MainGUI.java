@@ -3,102 +3,43 @@ package courier.view;
 import courier.manager.PackageManager;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class MainGUI extends JFrame{
+public class MainGUI extends JFrame {
     private final PackageManager manager = new PackageManager();
 
-    private JPanel contentPane;
-    private JLabel title;
-    private JButton CostEstimateButton;
-    private JButton AddPackageButton;
-    private JButton UpdatePackageButton;
-    private JButton DisplayButton;
-    private JButton SearchButton;
-    private JButton RemoveButton;
-
-    public MainGUI(){
+    public MainGUI() {
+        super("Courier Manager");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
 
-        title = new JLabel("Select an operation.");
-        title.setBounds(49, 44, 61, 16);
-        contentPane.add(title);
+        JPanel root = new JPanel(new BorderLayout(12,12));
+        root.setBorder(BorderFactory.createEmptyBorder(16,16,16,16));
+        setContentPane(root);
 
-        CostEstimateButton = new JButton("Estimate Cost");
-        CostEstimateButton.setBounds(49, 44, 61, 16);
-        CostEstimateButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                estimateCost();
-            }
-        });
-        contentPane.add(CostEstimateButton);
+        JLabel title = new JLabel("Select an operation.");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
+        root.add(title, BorderLayout.NORTH);
 
-        AddPackageButton = new JButton("Add Package");
-        AddPackageButton.setBounds(49, 44, 61, 16);
-        AddPackageButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                addPackage();
-            }
-        });
-        contentPane.add(AddPackageButton);
+        JPanel grid = new JPanel(new GridLayout(0, 2, 10, 10));
+        root.add(grid, BorderLayout.CENTER);
 
-        UpdatePackageButton = new JButton("Update Package");
-        UpdatePackageButton.setBounds(49, 44, 61, 16);
-        UpdatePackageButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                updatePackage();
-            }
-        });
-        contentPane.add(UpdatePackageButton);
+        grid.add(btn("Estimate Cost",  e -> new CostEstimateGUI(manager).setVisible(true)));
+        grid.add(btn("Add Package",    e -> new AddPackageGUI(manager).setVisible(true)));
+        grid.add(btn("Update Package", e -> new UpdatePackageGUI(manager).setVisible(true)));
+        grid.add(btn("Display All",    e -> new DisplayGUI(manager).setVisible(true)));
+        grid.add(btn("Search",         e -> new SearchGUI(manager).setVisible(true)));
+        grid.add(btn("Remove",         e -> new RemoveGUI(manager).setVisible(true)));
 
-        DisplayButton = new JButton("Display All");
-        DisplayButton.setBounds(49, 44, 61, 16);
-        DisplayButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                displayAll();
-            }
-        });
-        contentPane.add(DisplayButton);
-
-        SearchButton = new JButton("Search");
-        SearchButton.setBounds(49, 44, 61, 16);
-        SearchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                searchAll();
-            }
-        });
-
+        pack();
+        setMinimumSize(new Dimension(480, 320));
+        setLocationRelativeTo(null);
     }
 
-    public void estimateCost() {
-        CostEstimateGUI ceGUI = new CostEstimateGUI(manager);
-        ceGUI.setVisible(true);
+    private JButton btn(String text, java.awt.event.ActionListener a) {
+        JButton b = new JButton(text);
+        b.addActionListener(a);
+        b.setFocusPainted(false);
+        return b;
     }
-
-    public void addPackage() {
-        AddPackageGUI apgui = new AddPackageGUI(manager);
-        apgui.setVisible(true);
-    }
-
-    public void updatePackage() {
-        // TODO: hook up UpdatePackageGUI
-    }
-
-    public void displayAll() {
-        DisplayGUI dgui = new DisplayGUI(manager);
-        dgui.setVisible(true);
-    }
-
-    public void searchAll() {
-        // TODO: hook up SearchGUI
-    }
-
-    public PackageManager manager() { return manager; }
 }
